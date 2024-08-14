@@ -1,0 +1,15 @@
+config:
+  target: 'ws://localhost:8080/ws'
+  processor: './my-functions.js'
+  phases:
+    - duration: 10
+      arrivalRate: 1000
+
+scenarios:
+  - name: 'sending_subscribe_message'
+    engine: ws
+    flow:
+      - function: enableMessageLogging # to handle the messages
+      - function: 'createSubscribeMessage'
+      - send: '{{subscribe}}'
+      - think: 60
