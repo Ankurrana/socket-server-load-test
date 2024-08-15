@@ -23,7 +23,7 @@ import (
 
 /* configuration */
 const (
-	workers             int           = 1
+	workers             int           = 8
 	scriptTotalDuration time.Duration = time.Hour
 	interval            time.Duration = 100 * time.Millisecond
 	redisAddress        string        = "localhost:6379"
@@ -88,9 +88,10 @@ func publishOrdersToRedis(rdb *redis.Client) {
 		err := rdb.Publish(ctx, ch, payload).Err()
 		if err != nil {
 			log.Printf("failed to publish message: %v", err)
-		} else {
-			fmt.Printf("message published to channel:%s and payload:%s\n", ch, payload)
 		}
+		// else {
+		// 	// fmt.Printf("message published to channel:%s and payload:%s\n", ch, payload)
+		// }
 
 		// Sleep for a short duration to avoid flooding
 		time.Sleep(interval) // Adjust sleep duration as needed
@@ -128,11 +129,11 @@ func generateChannelPairs() []string {
 	// 	}
 
 	baseCurrencies := []string{
-		"BTC",
+		"BTC", "ETH", "BNB", "ADA",
 	}
 
 	quoteCurrencies := []string{
-		"USDT",
+		"USDT", "BTC",
 	}
 
 	//

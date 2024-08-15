@@ -22,7 +22,7 @@ function generateCryptoPairs() {
     //     "XEM", "MASK", "TOMO", "AVA", "FORTH", "REQ", "DGB", "LSK", "ANT", "BAND",
     // ];
     const baseCurrencies = [
-      "BTC"
+        "BTC", "ETH", "BNB", "ADA"
     ];
   
     // const quoteCurrencies = [
@@ -30,7 +30,7 @@ function generateCryptoPairs() {
     // ];
   
     const quoteCurrencies = [
-      "USDT"
+      "USDT", "BTC"
     ];
   
     // Generate 200 crypto pairs

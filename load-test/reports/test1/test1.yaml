@@ -3,7 +3,7 @@ config:
   processor: './my-functions.js'
   phases:
     - duration: 10
-      arrivalRate: 1000 
+      arrivalRate: 1000
 
 scenarios:
   - name: 'sending_subscribe_message'

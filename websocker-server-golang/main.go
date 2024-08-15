@@ -26,8 +26,44 @@ type SubscribeMessage struct {
 }
 
 // List of available cryptocurrency pairs
-var cryptoPairs = []string{
-	"BTCUSDT", "ETHUSDT", /* Add more pairs here */
+var cryptoPairs = generateChannelPairs()
+
+func generateChannelPairs() []string {
+	// baseCurrencies := []string{
+	// 	"BTC", "ETH", "BNB", "ADA", "XRP", "SOL", "DOGE", "DOT", "LTC", "AVAX",
+	// 	"MATIC", "TRX", "SHIB", "ATOM", "LINK", "BCH", "XLM", "ALGO", "VET", "HBAR",
+	// 	"ICP", "FIL", "SAND", "MANA", "EGLD", "AXS", "FTT", "NEAR", "GRT", "LUNA",
+	// 	"CAKE", "XTZ", "KLAY", "MIOTA", "RUNE", "MKR", "ZEC", "ENJ", "ZIL", "BAT",
+	// 	"STX", "XMR", "WAVES", "CHZ", "HNT", "1INCH", "CRV", "CELO", "RAY", "RSR",
+	// 	"GALA", "YFI", "COMP", "LRC", "OMG", "QNT", "FTM", "BTT", "MIM", "USDC",
+	// 	"UNI", "AAVE", "SUSHI", "YGG", "REN", "BAL", "SRM", "ANKR", "SKL", "MTL",
+	// 	"REVV", "UOS", "POLS", "ALPHA", "LINA", "RGT", "ORN", "BNT", "MLN", "AKRO",
+	// 	"DIA", "OCEAN", "CVC", "VTHO", "SXP", "CTSI", "CHR", "STORJ", "PERP", "QUICK",
+	// 	"XEM", "MASK", "TOMO", "AVA", "FORTH", "REQ", "DGB", "LSK", "ANT", "BAND",
+	// }
+	// quoteCurrencies := []string{
+	// 		"USDT", "BTC", "ETH", "BUSD", "DAI", "USD", "EUR", "JPY", "GBP", "AUD",
+	// 	}
+
+	baseCurrencies := []string{
+		"BTC", "ETH", "BNB", "ADA",
+	}
+
+	quoteCurrencies := []string{
+		"USDT", "BTC",
+	}
+
+	//
+
+	// Generate 200 crypto pairs
+	var cryptoPairs []string
+	for _, base := range baseCurrencies {
+		for _, quote := range quoteCurrencies {
+			cryptoPairs = append(cryptoPairs, base+quote)
+		}
+	}
+
+	return cryptoPairs
 }
 
 func main() {
@@ -37,7 +73,7 @@ func main() {
 	})
 
 	// Start WebSocket server
-	http.HandleFunc("/ws", handleWebSocket)
+	http.HandleFunc("/", handleWebSocket)
 	go func() {
 		log.Println("WebSocket server started on :8080")
 		err := http.ListenAndServe(":8080", nil)
