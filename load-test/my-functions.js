@@ -12,6 +12,7 @@ function createSubscribeMessage(userContext, events, done) {
   return done();
 }
 
+
 function getRandomPair() {
     const randomIndex = Math.floor(Math.random() * pairs.length);
     return pairs[randomIndex];
@@ -39,7 +40,7 @@ function generateCryptoPairs() {
   // ];
 
   const quoteCurrencies = [
-    "USDT", "BTC"
+    "USDT", "BTC",
   ];
 
   // Generate 200 crypto pairs
@@ -60,7 +61,6 @@ function enableMessageLogging(userContext, events, next) {
     events.emit('rate', 'websocket.receive_rate');
     calculateTimeDifference(message,events);
   });
-
   next();
 }
 
@@ -73,22 +73,23 @@ function calculateTimeDifference(jsonString, events) {
       const parsedData = JSON.parse(jsonString);
 
       // Extract the "E" field (timestamp)
-      const eventTimestamp = parsedData.e;
-
+      var eventTimestamp = parsedData.e;  
+      // console.error(eventTimestamp);
       // if (typeof eventTimestamp !== 'number') {
       //     console.error('Invalid or missing "e" field in the JSON string');
       //     return;
       // }
 
       // Get the current time in milliseconds
-      const currentTime = Date.now();
-      const date = new Date(eventTimestamp);
+      var currentTime = Date.now();
+      // const date = new Date(eventTimestamp);
       // Calculate the time difference
-      const timeDifference = currentTime - date.getTime();
+      var timeDifference = currentTime - eventTimestamp;
+      // console.error(timeDifference);
 
       events.emit('histogram','at_client_latency',timeDifference)
       // Print the time difference in a readable format
-      // console.log(`Time difference: ${timeDifference} ms`);
+      // console.error(`Time difference: ${timeDifference} ms`);
 
   } catch (error) {
       console.error('Error parsing JSON string:', error.message);

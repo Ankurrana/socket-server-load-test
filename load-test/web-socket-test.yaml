@@ -1,9 +1,12 @@
 config:
+  ensure:
+    thresholds:
+      - 'metric.at_client_latency.p99': 20
   target: 'ws://localhost:8080/ws'
   processor: './my-functions.js'
   phases:
-    - duration: 10
-      arrivalRate: 1000 
+    - duration: 300   # 5 minutes
+      arrivalRate: 100  # 100 clients added per second
 
 scenarios:
   - name: 'sending_subscribe_message'
@@ -12,4 +15,4 @@ scenarios:
       - function: enableMessageLogging # to handle the messages
       - function: 'createSubscribeMessage'
       - send: '{{subscribe}}'
-      - think: 60
+      - think: 120

@@ -25,7 +25,7 @@ import (
 const (
 	workers             int           = 8
 	scriptTotalDuration time.Duration = time.Hour
-	interval            time.Duration = 100 * time.Millisecond
+	interval            time.Duration = (time.Millisecond * 1000) / 25
 	redisAddress        string        = "localhost:6379"
 )
 
@@ -36,7 +36,7 @@ type OrderBook struct {
 	Bids map[string]string `json:"bids"`
 	Pr   string            `json:"pr"`
 	S    string            `json:"s"`
-	E    string            `json:"e"`
+	E    int64             `json:"e"`
 }
 
 func main() {
@@ -60,21 +60,24 @@ func publishOrdersToRedis(rdb *redis.Client) {
 
 	ctx := context.Background()
 	for {
+		ctime := time.Now().UnixMilli()
+
+		// fmt.Println("time:", ctime)
 		// Generate random OrderBook data
 		orderBook := OrderBook{
-			Ts:   time.Now().UnixMilli(),
+			Ts:   ctime,
 			Vs:   rand.Intn(100000000),
 			Asks: generateRandomOrders(),
 			Bids: generateRandomOrders(),
 			Pr:   "spot",
 			S:    "BTCUSDT",
-			E:    time.Now().Format(time.RFC3339),
+			E:    ctime,
 		}
 
 		// Convert OrderBook to JSON
 		orderBookJsonFirst, err1 := json.Marshal(orderBook)
 		orderBookJson := string(orderBookJsonFirst)
-		if err1 != nil || err1 != nil {
+		if err1 != nil {
 			fmt.Printf("Error marshaling JSON: %v , %v\n", err1, err1)
 			continue
 		}

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -10,6 +11,10 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/websocket"
+)
+
+var (
+	redisAddr string = "localhost:6379"
 )
 
 var (
@@ -69,7 +74,7 @@ func generateChannelPairs() []string {
 func main() {
 	// Initialize Redis client
 	redisClient = redis.NewClient(&redis.Options{
-		Addr: "localhost:6379", // Change this to your Redis address if needed
+		Addr: redisAddr, // Change this to your Redis address if needed
 	})
 
 	// Start WebSocket server
@@ -107,8 +112,13 @@ func handleWebSocket(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleSubscriptions(conn *websocket.Conn) {
+	conn.SetCloseHandler(func(code int, text string) error {
+		fmt.Println("connection closed by the client")
+		return nil
+	})
 	for {
 		_, message, err := conn.ReadMessage()
+
 		if err != nil {
 			log.Println("WebSocket read error:", err)
 			removeConnection(conn)
