@@ -173,7 +173,6 @@ func subscribeToRedisChannel(channel string) {
 		mu.Unlock()
 
 		payload := extractJson(msg.Payload)
-
 		// Broadcast to all active connections
 		for i := 0; i < len(connections); i++ {
 			conn := connections[i]

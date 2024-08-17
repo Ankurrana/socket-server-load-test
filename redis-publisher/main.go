@@ -44,16 +44,17 @@ func main() {
 		Addr: redisAddress, // Redis server address
 	})
 
-	for _ = range workers {
-		go publishOrdersToRedis(rdb)
+	for i := 0; i < workers; i++ {
+		go publishOrdersToRedis(rdb, i)
 	}
 
 	time.Sleep(scriptTotalDuration)
-
 }
 
-func publishOrdersToRedis(rdb *redis.Client) {
+func publishOrdersToRedis(rdb *redis.Client, channelId int) {
+
 	channels := generateChannelPairs()
+	ch := channels[channelId%len(channels)]
 
 	// Seed the random number generator
 	rand.Seed(time.Now().UnixNano())
@@ -85,18 +86,12 @@ func publishOrdersToRedis(rdb *redis.Client) {
 		// Format the output string
 		output := fmt.Sprintf("order-book/%s#%s", orderBookJson, "RANDOMLONGLONGLONGLONGSTRINGSTRING")
 
-		ch := channels[rand.Intn(len(channels))]
 		payload := output
 
 		err := rdb.Publish(ctx, ch, payload).Err()
 		if err != nil {
 			log.Printf("failed to publish message: %v", err)
 		}
-		// else {
-		// 	// fmt.Printf("message published to channel:%s and payload:%s\n", ch, payload)
-		// }
-
-		// Sleep for a short duration to avoid flooding
 		time.Sleep(interval) // Adjust sleep duration as needed
 	}
 }
@@ -104,7 +99,7 @@ func publishOrdersToRedis(rdb *redis.Client) {
 // generateRandomOrders is a helper function to generate random orders
 func generateRandomOrders() map[string]string {
 	orders := make(map[string]string)
-	numOrders := rand.Intn(50) + 1 // Random number of orders between 1 and 7
+	numOrders := rand.Intn(30) + 1 // Random number of orders between 1 and 7
 	for i := 0; i < numOrders; i++ {
 		price := fmt.Sprintf("%.2f", rand.Float64()*1000+65000)
 		quantity := fmt.Sprintf("%.5f", rand.Float64()*100)

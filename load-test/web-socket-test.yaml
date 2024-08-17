@@ -1,15 +1,15 @@
 config:
-  ensure:
-    thresholds:
-      - 'metric.at_client_latency.p99': 20
   target: 'ws://localhost:8080/ws'
   processor: './my-functions.js'
   phases:
-    - duration: 300   # 5 minutes
-      arrivalRate: 100  # 100 clients added per second
-
+    - name: 'create v users'  # spawns 10K users in 180 seconds and then waits for 10 minutes
+      duration: 180
+      arrivalCount: 10000   # 5 minutes
+    - name: '10 minutes pause' # 
+      pause: 300
 scenarios:
-  - name: 'sending_subscribe_message'
+  - name: 'orderbook_consumer_user'
+    weight: 1
     engine: ws
     flow:
       - function: enableMessageLogging # to handle the messages

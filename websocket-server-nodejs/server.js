@@ -2,7 +2,9 @@ const WebSocket = require('ws');
 const redis = require('redis');
 
 // Initialize Redis subscriber client
-const redisSubscriber = redis.createClient();
+const redisSubscriber = redis.createClient({
+    "url" : "redis://localhost:6379"
+});
 
 // List of available cryptocurrency pairs
 const cryptoPairs = generateCryptoPairs()
